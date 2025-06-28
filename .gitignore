@@ -1,0 +1,7 @@
+# vim swap files
+*.swp
+nouhp.out
+
+
+# MSP debug files
+MSPM0G3507/**/Debug/
