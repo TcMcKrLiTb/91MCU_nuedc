@@ -6,6 +6,9 @@ nouhp.out
 # MSP debug files
 MSPM0G3507/**/Debug/
 
+# MSP manual
+MSPM0G3507/*.pdf
+
 # STM32G431 Drivers files
 STM32G431RBT6/**/Drivers/
 
@@ -17,6 +20,9 @@ STM32G431RBT6/**/MDK-ARM/*
 !STM32G431RBT6/**/MDK-ARM/*.uvoptx
 !STM32G431RBT6/**/MDK-ARM/*.s
 !STM32G431RBT6/**/MDK-ARM/*.lst
+
+# STM32G431 manual
+STM32G431RBT6/*.pdf
 
 # STM32F411 Drivers files
 STM32F411CEU6/**/Drivers/
@@ -30,3 +36,5 @@ STM32F411CEU6/**/MDK-ARM/*
 !STM32F411CEU6/**/MDK-ARM/*.s
 !STM32F411CEU6/**/MDK-ARM/*.lst
 
+# STM32F411 manual
+# STM32F411CEU6/*.pdf
