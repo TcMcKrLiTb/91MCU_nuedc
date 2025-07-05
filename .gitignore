@@ -6,14 +6,27 @@ nouhp.out
 # MSP debug files
 MSPM0G3507/**/Debug/
 
-# STM32F431 Drivers files
-STM32G431C8T6/**/Drivers/
+# STM32G431 Drivers files
+STM32G431RBT6/**/Drivers/
 
-# STM32F431 MDK_ARM other file
-STM32G431C8T6/**/MDK-ARM/*
+# STM32G431 MDK_ARM other file
+STM32G431RBT6/**/MDK-ARM/*
 
 # uvproj files
-!STM32G431C8T6/**/MDK-ARM/*.uvprojx
-!STM32G431C8T6/**/MDK-ARM/*.uvoptx
-!STM32G431C8T6/**/MDK-ARM/*.s
-!STM32G431C8T6/**/MDK-ARM/*.lst
+!STM32G431RBT6/**/MDK-ARM/*.uvprojx
+!STM32G431RBT6/**/MDK-ARM/*.uvoptx
+!STM32G431RBT6/**/MDK-ARM/*.s
+!STM32G431RBT6/**/MDK-ARM/*.lst
+
+# STM32F411 Drivers files
+STM32F411CEU6/**/Drivers/
+
+# STM32F411 MDK_ARM other file
+STM32F411CEU6/**/MDK-ARM/*
+
+# uvproj files
+!STM32F411CEU6/**/MDK-ARM/*.uvprojx
+!STM32F411CEU6/**/MDK-ARM/*.uvoptx
+!STM32F411CEU6/**/MDK-ARM/*.s
+!STM32F411CEU6/**/MDK-ARM/*.lst
+
