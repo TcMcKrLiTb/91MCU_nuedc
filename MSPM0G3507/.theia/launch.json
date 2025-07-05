@@ -9,6 +9,15 @@
                 "name": "empty",
                 "resourceId": "/empty"
             }
+        },
+        {
+            "name": "adc12_dma_timer",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "adc12_dma_timer",
+                "resourceId": "/adc12_dma_timer"
+            }
         }
     ]
 }
