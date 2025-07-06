@@ -18,6 +18,15 @@
                 "name": "adc12_dma_timer",
                 "resourceId": "/adc12_dma_timer"
             }
+        },
+        {
+            "name": "adc12_dma_timer_multi",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "adc12_dma_timer_multi",
+                "resourceId": "/adc12_dma_timer_multi"
+            }
         }
     ]
 }
