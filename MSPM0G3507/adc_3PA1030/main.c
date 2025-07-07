@@ -32,48 +32,44 @@
 
 #include "ti_msp_dl_config.h"
 
-#include "flexible_button.h"
-#include "key_event.h"
+#define SAMPLE_NUMS 20
+
+volatile uint32_t adc_buffer[SAMPLE_NUMS];
+volatile bool adc_flag = false;
 
 int main(void)
 {
-    uint8_t op;
     SYSCFG_DL_init();
 
-    NVIC_EnableIRQ(TIMER_KEY_INST_INT_IRQN);
+    NVIC_EnableIRQ(DMA_INT_IRQn);
 
-    user_button_init();
+    adc_flag = false;
+    DL_DMA_setSrcAddr(DMA, DMA_CH0_CHAN_ID,
+                      (uint32_t)&(GPIO_3PA_PORT->DIN3_0));
+    DL_DMA_setDestAddr(DMA, DMA_CH0_CHAN_ID, (uint32_t)&adc_buffer[0]);
+    DL_DMA_setTransferSize(DMA, DMA_CH0_CHAN_ID, SAMPLE_NUMS);
+    DL_DMA_enableChannel(DMA, DMA_CH0_CHAN_ID);
 
-    DL_TimerA_startCounter(TIMER_KEY_INST);
+    DL_TimerA_startCounter(PWM_0_INST);
+
+    while (adc_flag == false)
+        ;
+
+    __BKPT();
 
     while (1)
     {
-        op = get_earlest_event();
-        switch (op & 0x0f)
-        {
-        case 0:
-            switch (op >> 4)
-            {
-            case 1:
-                break;
-            case 2:
-                break;
-            default:
-                break;
-            }
-            break;
-        default:
-            break;
-        }
     }
 }
 
-void TIMER_KEY_INST_IRQHandler(void)
+void DMA_IRQHandler(void)
 {
-    switch (DL_Timer_getPendingInterrupt(TIMER_KEY_INST))
+    switch (DL_DMA_getPendingInterrupt(DMA))
     {
-    case DL_TIMER_IIDX_ZERO:
-        flex_button_scan();
+    case DL_DMA_EVENT_IIDX_DMACH0:
+        DL_TimerA_stopCounter(PWM_0_INST);
+        adc_flag = true;
+        DL_DMA_clearInterruptStatus(DMA, DL_DMA_INTERRUPT_CHANNEL0);
         break;
     default:
         break;

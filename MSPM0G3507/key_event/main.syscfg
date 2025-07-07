@@ -9,6 +9,8 @@
 /**
  * Import the modules used in this configuration.
  */
+const GPIO   = scripting.addModule("/ti/driverlib/GPIO", {}, false);
+const GPIO1  = GPIO.addInstance();
 const SYSCTL = scripting.addModule("/ti/driverlib/SYSCTL");
 const TIMER  = scripting.addModule("/ti/driverlib/TIMER", {}, false);
 const TIMER1 = TIMER.addInstance();
@@ -36,11 +38,17 @@ pinFunction4.enable      = true;
 pinFunction4.inputFreq   = 40;
 pinFunction4.HFXTStartup = 16;
 
+GPIO1.$name                              = "GPIO_KEY";
+GPIO1.associatedPins[0].$name            = "PIN_0";
+GPIO1.associatedPins[0].direction        = "INPUT";
+GPIO1.associatedPins[0].internalResistor = "PULL_UP";
+GPIO1.associatedPins[0].pin.$assign      = "PB21";
+
+const Board = scripting.addModule("/ti/driverlib/Board", {}, false);
+
 SYSCTL.forceDefaultClkConfig = true;
 SYSCTL.clockTreeEn           = true;
 scripting.suppress("For best practices when the CPUCLK is running at 32MHz and above, clear the flash status bit using DL_FlashCTL_executeClearStatus\\(\\) before executing any flash operation\\. Otherwise there may be false positives\\.", SYSCTL);
-
-const Board = scripting.addModule("/ti/driverlib/Board", {}, false);
 
 TIMER1.$name              = "TIMER_KEY";
 TIMER1.timerClkDiv        = 8;

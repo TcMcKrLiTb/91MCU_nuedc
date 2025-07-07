@@ -49,6 +49,15 @@
                     ]
                 }
             ]
+        },
+        {
+            "name": "adc_3PA1030",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "adc_3PA1030",
+                "resourceId": "/adc_3PA1030"
+            }
         }
     ]
 }
