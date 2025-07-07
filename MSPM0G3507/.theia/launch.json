@@ -58,6 +58,28 @@
                 "name": "adc_3PA1030",
                 "resourceId": "/adc_3PA1030"
             }
+        },
+        {
+            "name": "fir_filter_for_samples",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "fir_filter_for_samples",
+                "resourceId": "/fir_filter_for_samples"
+            },
+            "connections": [
+                {
+                    "name": "Texas Instruments XDS110 USB Debug Probe",
+                    "cores": [
+                        {
+                            "name": "CORTEX_M0P",
+                            "debuggerSettings": {
+                                "data": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n<PropertyValues/>\n"
+                            }
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
