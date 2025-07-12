@@ -11,13 +11,36 @@
  */
 const GPIO   = scripting.addModule("/ti/driverlib/GPIO", {}, false);
 const GPIO1  = GPIO.addInstance();
+const I2C    = scripting.addModule("/ti/driverlib/I2C", {}, false);
+const I2C1   = I2C.addInstance();
 const SPI    = scripting.addModule("/ti/driverlib/SPI", {}, false);
 const SPI1   = SPI.addInstance();
 const SYSCTL = scripting.addModule("/ti/driverlib/SYSCTL");
+const TIMER  = scripting.addModule("/ti/driverlib/TIMER", {}, false);
+const TIMER1 = TIMER.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
  */
+const divider9       = system.clockTree["UDIV"];
+divider9.divideValue = 2;
+
+const multiplier2         = system.clockTree["PLL_QDIV"];
+multiplier2.multiplyValue = 4;
+
+const mux4       = system.clockTree["EXHFMUX"];
+mux4.inputSelect = "EXHFMUX_XTAL";
+
+const mux8       = system.clockTree["HSCLKMUX"];
+mux8.inputSelect = "HSCLKMUX_SYSPLL0";
+
+const mux12       = system.clockTree["SYSPLLMUX"];
+mux12.inputSelect = "zSYSPLLMUX_HFCLK";
+
+const pinFunction4     = system.clockTree["HFXT"];
+pinFunction4.inputFreq = 40;
+pinFunction4.enable    = true;
+
 GPIO1.$name                         = "GPIO_OLED";
 GPIO1.associatedPins.create(2);
 GPIO1.associatedPins[0].$name       = "PIN_DC";
@@ -27,6 +50,15 @@ GPIO1.associatedPins[1].pin.$assign = "PA13";
 
 const Board = scripting.addModule("/ti/driverlib/Board", {}, false);
 
+I2C1.$name                           = "I2C_0";
+I2C1.basicEnableController           = true;
+I2C1.basicControllerStandardBusSpeed = "Fast";
+I2C1.peripheral.$assign              = "I2C0";
+I2C1.peripheral.sdaPin.$assign       = "PA28";
+I2C1.peripheral.sclPin.$assign       = "PA31";
+I2C1.sdaPinConfig.$name              = "ti_driverlib_gpio_GPIOPinGeneric2";
+I2C1.sclPinConfig.$name              = "ti_driverlib_gpio_GPIOPinGeneric3";
+
 SPI1.$name                          = "SPI_0";
 SPI1.frameFormat                    = "MOTO3";
 SPI1.polarity                       = "1";
@@ -34,25 +66,37 @@ SPI1.phase                          = "1";
 SPI1.direction                      = "PICO";
 SPI1.enabledInterrupts              = ["DMA_DONE_TX","TX_EMPTY"];
 SPI1.enabledDMAEvent2Triggers       = "DL_SPI_DMA_INTERRUPT_TX";
+SPI1.targetBitRate                  = 20000000;
 SPI1.sclkPinConfig.$name            = "ti_driverlib_gpio_GPIOPinGeneric0";
 SPI1.mosiPinConfig.$name            = "ti_driverlib_gpio_GPIOPinGeneric1";
 SPI1.peripheral.$assign             = "SPI0";
 SPI1.peripheral.sclkPin.$assign     = "PA11";
-SPI1.peripheral.mosiPin.$assign     = "PA14";
+SPI1.peripheral.mosiPin.$assign     = "PB17";
 SPI1.DMA_CHANNEL_EVENT2.$name       = "DMA_CH0";
 SPI1.DMA_CHANNEL_EVENT2.srcLength   = "BYTE";
 SPI1.DMA_CHANNEL_EVENT2.dstLength   = "BYTE";
 SPI1.DMA_CHANNEL_EVENT2.addressMode = "b2f";
 
 SYSCTL.forceDefaultClkConfig = true;
+SYSCTL.clockTreeEn           = true;
+
+TIMER1.$name              = "TIMER_0";
+TIMER1.timerMode          = "PERIODIC";
+TIMER1.timerClkDiv        = 8;
+TIMER1.timerClkPrescale   = 200;
+TIMER1.timerPeriod        = "1000ms";
+TIMER1.interrupts         = ["ZERO"];
+TIMER1.peripheral.$assign = "TIMG0";
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
+pinFunction4.peripheral.$suggestSolution            = "SYSCTL";
+pinFunction4.peripheral.hfxInPin.$suggestSolution   = "PA5";
+pinFunction4.peripheral.hfxOutPin.$suggestSolution  = "PA6";
 Board.peripheral.$suggestSolution                   = "DEBUGSS";
 Board.peripheral.swclkPin.$suggestSolution          = "PA20";
 Board.peripheral.swdioPin.$suggestSolution          = "PA19";
 SPI1.DMA_CHANNEL_EVENT2.peripheral.$suggestSolution = "DMA_CH0";
-SYSCTL.peripheral.$suggestSolution                  = "SYSCTL";

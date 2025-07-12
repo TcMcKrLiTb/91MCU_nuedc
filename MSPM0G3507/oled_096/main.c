@@ -32,10 +32,70 @@
 
 #include "ti_msp_dl_config.h"
 
+#include "stdio.h"
+
+#define OLED_SPI 1
+#define OLED_IIC 2
+#define TEST_MODE OLED_IIC
+
+#if TEST_MODE == OLED_SPI
+#include "oled_hardware_spi/oled.h"
+#include "oled_hardware_spi/gui.h"
+#else
+#include "oled_hardware_iic/oled.h"
+#include "oled_hardware_iic/gui.h"
+#endif
+
+uint16_t fpsCounter = 0, fpsNum = 0;
+
 int main(void)
 {
+    char tempStr[10];
+    uint8_t strLen = 0;
     SYSCFG_DL_init();
 
-    while (1) {
+    NVIC_EnableIRQ(TIMER_0_INST_INT_IRQN);
+    fpsCounter = 0;
+    DL_Timer_startCounter(TIMER_0_INST);
+
+#if TEST_MODE == OLED_SPI
+    OLED_Init();
+    OLED_Clear(0);
+    OLED_Display();
+    while (1)
+    {
+        GUI_ShowChar(0, 0, 'C', 8, 1);
+        strLen = snprintf(tempStr, 10, "fps:%d", fpsNum);
+        strLen++;
+        GUI_ShowString(128 - 6 * strLen, 0, (uint8_t*)tempStr, 8, 1);
+        OLED_Display();
+        fpsCounter++;
+    }
+#else
+    OLED_Init();
+    OLED_Clear(0);
+    OLED_Display();
+#endif
+
+    while (1)
+    {
+        GUI_ShowChar(0, 0, 'C', 8, 1);
+        strLen = snprintf(tempStr, 10, "fps:%d", fpsNum);
+        strLen++;
+        GUI_ShowString(128 - 6 * strLen, 0, (uint8_t*)tempStr, 8, 1);
+        OLED_Display();
+        fpsCounter++;
+    }
+}
+
+void TIMER_0_INST_IRQHandler(void)
+{
+    switch (DL_TimerG_getPendingInterrupt(TIMER_0_INST)) {
+        case DL_TIMER_IIDX_ZERO:
+            fpsNum = fpsCounter;
+            fpsCounter = 0;
+            break;
+        default:
+            break;
     }
 }

@@ -113,7 +113,6 @@ void OLED_WR_Byte(unsigned dat, unsigned cmd)
     else
         OLED_DC_Clr();
     // OLED_CS_Clr();
-    delay_cycles(100);
     DL_SPI_transmitData8(SPI_0_INST, dat);
     // OLED_CS_Set();
 }
@@ -127,14 +126,14 @@ void OLED_Set_Pos(unsigned char x, unsigned char y)
 
 void OLED_Display_On(void)
 {
-    OLED_WR_Byte(0X8D, OLED_CMD); // SET DCDC����
+    OLED_WR_Byte(0X8D, OLED_CMD); // SET DCDC
     OLED_WR_Byte(0X14, OLED_CMD); // DCDC ON
     OLED_WR_Byte(0XAF, OLED_CMD); // DISPLAY ON
 }
 
 void OLED_Display_Off(void)
 {
-    OLED_WR_Byte(0X8D, OLED_CMD); // SET DCDC����
+    OLED_WR_Byte(0X8D, OLED_CMD); // SET DCDC
     OLED_WR_Byte(0X10, OLED_CMD); // DCDC OFF
     OLED_WR_Byte(0XAE, OLED_CMD); // DISPLAY OFF
 }
@@ -197,8 +196,6 @@ void OLED_Display(void)
         DL_DMA_enableChannel(DMA, DMA_CH0_CHAN_ID);
         while (false == gSPIDataTransmitted)
             ;
-        delay_cycles(100);
-        OLED_DC_Clr();
     } // update full screen
 }
 
