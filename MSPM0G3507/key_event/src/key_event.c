@@ -12,7 +12,7 @@ uint8_t common_btn_read(void *arg)
     switch (btn->id)
     {
     case USER_BUTTON_0:
-        value = pin | GPIO_KEY_PIN_0_PIN ? 1 : 0;
+        value = (pin & GPIO_KEY_PIN_0_PIN) ? 1 : 0;
         break;
     default:
         value = 0;

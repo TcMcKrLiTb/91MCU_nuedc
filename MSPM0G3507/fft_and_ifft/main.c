@@ -35,56 +35,72 @@
 #include "arm_const_structs.h"
 #include "arm_math.h"
 
-#define NUM_SAMPLES 256
+#define NUM_SAMPLES 1024
+#define REAL_NUM_SAMPLES (NUM_SAMPLES + 8)
+#define FIFO_NUM (REAL_NUM_SAMPLES >> 1)
 #define IFFTFLAG 0
 #define BITREVERSE 1
 
-static uint32_t adcBuffer[NUM_SAMPLES] = {
-    0,      4091,   8021,   11639,  14810,  17421,  19391,  20671,  21246,
-    21137,  20397,  19109,  17378,  15325,  13078,  10767,  8513,   6421,
-    4577,   3040,   1839,   976,    424,    128,    16,     0,      -16,
-    -128,   -424,   -976,   -1839,  -3040,  -4577,  -6421,  -8513,  -10767,
-    -13078, -15325, -17378, -19109, -20397, -21137, -21246, -20671, -19391,
-    -17421, -14810, -11639, -8021,  -4091,  0,      4091,   8021,   11639,
-    14810,  17421,  19391,  20671,  21246,  21137,  20397,  19109,  17378,
-    15325,  13078,  10767,  8513,   6421,   4577,   3040,   1839,   976,
-    424,    128,    16,     0,      -16,    -128,   -424,   -976,   -1839,
-    -3040,  -4577,  -6421,  -8513,  -10767, -13078, -15325, -17378, -19109,
-    -20397, -21137, -21246, -20671, -19391, -17421, -14810, -11639, -8021,
-    -4091,  0,      4091,   8021,   11639,  14810,  17421,  19391,  20671,
-    21246,  21137,  20397,  19109,  17378,  15325,  13078,  10767,  8513,
-    6421,   4577,   3040,   1839,   976,    424,    128,    16,     0,
-    -16,    -128,   -424,   -976,   -1839,  -3040,  -4577,  -6421,  -8513,
-    -10767, -13078, -15325, -17378, -19109, -20397, -21137, -21246, -20671,
-    -19391, -17421, -14810, -11639, -8021,  -4091,  0,      4091,   8021,
-    11639,  14810,  17421,  19391,  20671,  21246,  21137,  20397,  19109,
-    17378,  15325,  13078,  10767,  8513,   6421,   4577,   3040,   1839,
-    976,    424,    128,    16,     0,      -16,    -128,   -424,   -976,
-    -1839,  -3040,  -4577,  -6421,  -8513,  -10767, -13078, -15325, -17378,
-    -19109, -20397, -21137, -21246, -20671, -19391, -17421, -14810, -11639,
-    -8021,  -4091,  0,      4091,   8021,   11639,  14810,  17421,  19391,
-    20671,  21246,  21137,  20397,  19109,  17378,  15325,  13078,  10767,
-    8513,   6421,   4577,   3040,   1839,   976,    424,    128,    16,
-    0,      -16,    -128,   -424,   -976,   -1839,  -3040,  -4577,  -6421,
-    -8513,  -10767, -13078, -15325, -17378, -19109, -20397, -21137, -21246,
-    -20671, -19391, -17421, -14810, -11639, -8021,  -4091,  0,      4091,
-    8021,   11639,  14810,  17421};
-
-volatile int16_t FFTOutput[NUM_SAMPLES * 2];
+volatile int16_t adcBuffer[REAL_NUM_SAMPLES] = {};
+volatile float FFTInput[NUM_SAMPLES << 1];
+volatile float FFTOutput[NUM_SAMPLES];
+volatile float IFFTOutput[NUM_SAMPLES];
 volatile uint32_t FFTmaxValue;
 volatile uint32_t FFTmaxFreqIndex;
+arm_cfft_instance_f32 varInstCfftF32;
+volatile bool adcflag;
 
 int main(void)
 {
     SYSCFG_DL_init();
-    arm_cfft_q15(&arm_cfft_sR_q15_len256, (q15_t *)adcBuffer, IFFTFLAG,
-                 BITREVERSE);
-    arm_cmplx_mag_q15((q15_t *)adcBuffer, (q15_t *)FFTOutput, NUM_SAMPLES);
-    arm_max_q15((q15_t *)FFTOutput, NUM_SAMPLES, (q15_t *)&FFTmaxValue,
-                (uint32_t *)&FFTmaxFreqIndex);
-
-    __BKPT(0);
+    NVIC_EnableIRQ(ADC12_0_INST_INT_IRQN);
     while (1)
     {
+        adcflag = false;
+        DL_DMA_setSrcAddr(DMA, DMA_CH0_CHAN_ID,
+                          (uint32_t)DL_ADC12_getFIFOAddress(ADC12_0_INST));
+        DL_DMA_setDestAddr(DMA, DMA_CH0_CHAN_ID, (uint32_t)&adcBuffer[0]);
+        DL_DMA_setTransferSize(DMA, DMA_CH0_CHAN_ID, FIFO_NUM);
+        DL_DMA_enableChannel(DMA, DMA_CH0_CHAN_ID);
+        DL_ADC12_startConversion(ADC12_0_INST);
+        while (false == adcflag)
+        {
+        }
+
+        __BKPT(0);
+        for (uint16_t i = 0; i < NUM_SAMPLES; i++)
+        {
+            FFTInput[i << 1] = (float)adcBuffer[i];
+            FFTInput[(i << 1) + 1] = 0.0;
+        }
+        arm_cfft_init_f32(&varInstCfftF32, NUM_SAMPLES);
+
+        arm_cfft_f32(&varInstCfftF32, (float32_t *)FFTInput, 0, 1);
+        arm_cmplx_mag_f32((float32_t *)FFTInput, (float32_t *)FFTOutput,
+                          NUM_SAMPLES);
+        __BKPT(0);
+
+        arm_cfft_init_f32(&varInstCfftF32, NUM_SAMPLES);
+        arm_cfft_f32(&varInstCfftF32, (float32_t*)FFTInput, 1, 1);
+
+
+        __BKPT(0);
     }
+}
+
+void ADC12_0_INST_IRQHandler(void)
+{
+    switch (DL_ADC12_getPendingInterrupt(ADC12_0_INST))
+    {
+    case DL_ADC12_IIDX_DMA_DONE:
+        DL_ADC12_stopConversion(ADC12_0_INST);
+        adcflag = 1;
+        // clear interrupt flag
+        DL_ADC12_clearInterruptStatus(ADC12_0_INST,
+                                      DL_ADC12_INTERRUPT_DMA_DONE);
+        break;
+    default:
+        break;
+    }
+    // DL_TimerA_startCounter(TIMER_ADC_INST);
 }

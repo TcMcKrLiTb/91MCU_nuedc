@@ -9,6 +9,8 @@
 /**
  * Import the modules used in this configuration.
  */
+const ADC12         = scripting.addModule("/ti/driverlib/ADC12", {}, false);
+const ADC121        = ADC12.addInstance();
 const SYSCTL        = scripting.addModule("/ti/driverlib/SYSCTL");
 const ProjectConfig = scripting.addModule("/ti/project_config/ProjectConfig");
 
@@ -35,11 +37,28 @@ pinFunction4.inputFreq   = 40;
 pinFunction4.HFXTStartup = 16;
 pinFunction4.enable      = true;
 
+ADC121.$name                          = "ADC12_0";
+ADC121.sampClkSrc                     = "DL_ADC12_CLOCK_ULPCLK";
+ADC121.repeatMode                     = true;
+ADC121.enableFIFO                     = true;
+ADC121.powerDownMode                  = "DL_ADC12_POWER_DOWN_MODE_MANUAL";
+ADC121.enabledInterrupts              = ["DL_ADC12_INTERRUPT_DMA_DONE"];
+ADC121.configureDMA                   = true;
+ADC121.sampCnt                        = 6;
+ADC121.sampleTime0                    = "800ns";
+ADC121.enabledDMATriggers             = ["DL_ADC12_DMA_MEM11_RESULT_LOADED"];
+ADC121.peripheral.$assign             = "ADC0";
+ADC121.peripheral.adcPin0.$assign     = "PA27";
+ADC121.adcPin0Config.$name            = "ti_driverlib_gpio_GPIOPinGeneric0";
+ADC121.DMA_CHANNEL.$name              = "DMA_CH0";
+ADC121.DMA_CHANNEL.addressMode        = "f2b";
+ADC121.DMA_CHANNEL.peripheral.$assign = "DMA_CH0";
+
+const Board = scripting.addModule("/ti/driverlib/Board", {}, false);
+
 SYSCTL.forceDefaultClkConfig = true;
 SYSCTL.clockTreeEn           = true;
 scripting.suppress("For best practices when the CPUCLK is running at 32MHz and above, clear the flash status bit using DL_FlashCTL_executeClearStatus\\(\\) before executing any flash operation\\. Otherwise there may be false positives\\.", SYSCTL);
-
-const Board = scripting.addModule("/ti/driverlib/Board", {}, false);
 
 ProjectConfig.genLibCMSIS     = true;
 ProjectConfig.genLibIQVersion = "MATHACL";

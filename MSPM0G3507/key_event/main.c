@@ -55,8 +55,10 @@ int main(void)
             switch (op >> 4)
             {
             case 1:
+                __BKPT(0);
                 break;
             case 2:
+                __BKPT(0);
                 break;
             default:
                 break;
