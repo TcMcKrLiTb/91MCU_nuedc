@@ -50,6 +50,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define OLED_CMD 0  // write command
 #define OLED_DATA 1 // write data
 
+#define I2C_TARGET_ADDRESS (0x3C) // I2C Target address
+
+typedef enum
+{
+    I2C_STATUS_IDLE = 0,
+    I2C_STATUS_TX_STARTED,
+    I2C_STATUS_TX_INPROGRESS,
+    I2C_STATUS_TX_COMPLETE,
+    I2C_STATUS_RX_STARTED,
+    I2C_STATUS_RX_INPROGRESS,
+    I2C_STATUS_RX_COMPLETE,
+    I2C_STATUS_ERROR,
+} I2cControllerStatus;
+
 void OLED_WR_Byte(unsigned dat, unsigned cmd);
 void OLED_Display_On(void);
 void OLED_Display_Off(void);
