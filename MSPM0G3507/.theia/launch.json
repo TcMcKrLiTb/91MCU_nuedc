@@ -146,6 +146,50 @@
                     ]
                 }
             ]
+        },
+        {
+            "name": "nuedc_2023H",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "nuedc_2023H",
+                "resourceId": "/nuedc_2023H"
+            },
+            "connections": [
+                {
+                    "name": "Texas Instruments XDS110 USB Debug Probe",
+                    "cores": [
+                        {
+                            "name": "CORTEX_M0P",
+                            "debuggerSettings": {
+                                "data": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n<PropertyValues/>\n"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "tpl0501",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "tpl0501",
+                "resourceId": "/tpl0501"
+            },
+            "connections": [
+                {
+                    "name": "Texas Instruments XDS110 USB Debug Probe",
+                    "cores": [
+                        {
+                            "name": "CORTEX_M0P",
+                            "debuggerSettings": {
+                                "data": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n<PropertyValues/>\n"
+                            }
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
