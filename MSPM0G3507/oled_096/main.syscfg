@@ -82,6 +82,7 @@ SPI1.DMA_CHANNEL_EVENT2.addressMode = "b2f";
 
 SYSCTL.forceDefaultClkConfig = true;
 SYSCTL.clockTreeEn           = true;
+scripting.suppress("For best practices when the CPUCLK is running at 32MHz and above, clear the flash status bit using DL_FlashCTL_executeClearStatus\\(\\) before executing any flash operation\\. Otherwise there may be false positives\\.", SYSCTL);
 
 TIMER1.$name              = "TIMER_0";
 TIMER1.timerMode          = "PERIODIC";
