@@ -42,5 +42,11 @@ int main(void)
     AD9833_Init(SIN, 4999.9, 0);
 
     while (1) {
+        for (uint16_t i = 30; i <= 60; i++)
+        {
+            float freq = pow(10, (float)i / 10);
+            AD9833_Init(SIN, freq, 0);
+            delay_cycles(800);
+        }
     }
 }
