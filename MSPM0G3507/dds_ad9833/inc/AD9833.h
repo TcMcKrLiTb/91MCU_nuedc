@@ -4,7 +4,9 @@
 #include "ti/driverlib/dl_gpio.h"
 #include "ti_msp_dl_config.h"
 
-#define FMCLK 25000000 // Master Clock On AD9833
+// #define FMCLK 25000000 // Master Clock On AD9833
+#define FMCLK 1280000 // Master Clock On AD9833
+
 enum WaveType
 {
     SIN,

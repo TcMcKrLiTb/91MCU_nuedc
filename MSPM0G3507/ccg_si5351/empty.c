@@ -32,21 +32,10 @@
 
 #include "ti_msp_dl_config.h"
 
-#include "AD9833.h"
-
 int main(void)
 {
     SYSCFG_DL_init();
 
-    AD9833_choose(USER_AD9833_0);
-    AD9833_Init(SIN, 10000, 0);
-
     while (1) {
-        // for (uint16_t i = 30; i <= 60; i++)
-        // {
-        //     float freq = pow(10, (float)i / 10);
-        //     AD9833_Init(SIN, freq, 0);
-        //     delay_cycles(800);
-        // }
     }
 }
