@@ -221,6 +221,59 @@
                 "name": "adc12_internal_temp_sensor_mathacl_LP_MSPM0G3507_nortos_ticlang",
                 "resourceId": "/adc12_internal_temp_sensor_mathacl_LP_MSPM0G3507_nortos_ticlang"
             }
+        },
+        {
+            "name": "adc_ads131",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "adc_ads131",
+                "resourceId": "/adc_ads131"
+            },
+            "connections": [
+                {
+                    "name": "Texas Instruments XDS110 USB Debug Probe",
+                    "cores": [
+                        {
+                            "name": "CORTEX_M0P",
+                            "debuggerSettings": {
+                                "data": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n<PropertyValues/>\n"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "nuedc_2024A",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "nuedc_2024A",
+                "resourceId": "/nuedc_2024A"
+            },
+            "connections": [
+                {
+                    "name": "Texas Instruments XDS110 USB Debug Probe",
+                    "cores": [
+                        {
+                            "name": "CORTEX_M0P",
+                            "debuggerSettings": {
+                                "data": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n<PropertyValues/>\n"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "msp41010",
+            "type": "ccs-debug",
+            "request": "launch",
+            "projectInfo": {
+                "name": "msp41010",
+                "resourceId": "/msp41010"
+            }
         }
     ]
 }
